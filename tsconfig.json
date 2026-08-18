@@ -11,6 +11,12 @@
     },
     {
       "path": "./todo-app"
+    },
+    {
+      "path": "./movie-picker-e2e"
+    },
+    {
+      "path": "./movie-picker"
     }
   ],
   "compilerOptions": {}

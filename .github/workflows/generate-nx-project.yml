@@ -102,7 +102,16 @@ jobs:
           NX_PLUGIN: ${{ steps.generator.outputs.plugin }}
         shell: bash
         run: |
-          node -e "const p=require('./package.json'); process.exit(p.dependencies?.[process.env.NX_PLUGIN] || p.devDependencies?.[process.env.NX_PLUGIN] ? 0 : 1)" || npx nx add "$NX_PLUGIN" --no-interactive
+          if npm ls "$NX_PLUGIN" --depth=0 >/dev/null 2>&1; then
+            echo "$NX_PLUGIN is already installed"
+          else
+            nx_version=$(node -p "const p=require('./package.json'); String(p.devDependencies?.nx || p.dependencies?.nx || '').replace(/^[^0-9]*/, '')")
+            if [[ -z "$nx_version" ]]; then
+              echo "::error::Could not determine the workspace Nx version"
+              exit 1
+            fi
+            npx nx add "$NX_PLUGIN@$nx_version" --no-interactive || npm install --save-dev "$NX_PLUGIN@$nx_version" --no-audit --no-fund
+          fi
 
       - name: Generate project
         env:

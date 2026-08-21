@@ -11,6 +11,18 @@
     },
     {
       "path": "./todo-app"
+    },
+    {
+      "path": "./drug-management-system-e2e"
+    },
+    {
+      "path": "./drug-management-system"
+    },
+    {
+      "path": "./drug-management-e2e"
+    },
+    {
+      "path": "./drug-management"
     }
   ],
   "compilerOptions": {}

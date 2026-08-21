@@ -49,7 +49,9 @@
   "workspaces": [
     "packages/*",
     "calculator",
-    "todo-app"
+    "todo-app",
+    "drug-management-system",
+    "drug-management"
   ],
   "dependencies": {
     "react": "^19.0.0",

@@ -26,6 +26,9 @@
     },
     {
       "path": "./apps/ram_project"
+    },
+    {
+      "path": "./apps/ram_nodeproject"
     }
   ],
   "compilerOptions": {}

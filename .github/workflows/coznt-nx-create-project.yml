@@ -6,6 +6,7 @@ on:
       project_name: { required: true, type: string }
       template: { required: true, type: string }
       branch: { required: true, type: string }
+      base_branch: { required: true, type: string }
       coznt_project_id: { required: true, type: string }
 permissions:
   contents: write
@@ -35,18 +36,19 @@ jobs:
           fi
       - name: Select branch
         env:
-          REQUESTED_BRANCH: "${{ inputs.branch }}"
-          DEFAULT_BRANCH: "${{ github.event.repository.default_branch }}"
+          BRANCH: "${{ inputs.branch }}"
+          BASE_BRANCH: "${{ inputs.base_branch }}"
         run: |
-          if git fetch origin "$REQUESTED_BRANCH"; then
-            BASE_BRANCH="$REQUESTED_BRANCH"
-            BRANCH="coznt/nx-${{ inputs.project_name }}-${{ github.run_id }}"
-          else
-            BASE_BRANCH="$DEFAULT_BRANCH"
-            BRANCH="$REQUESTED_BRANCH"
-            git fetch origin "$BASE_BRANCH"
+          if [[ "$BRANCH" == "$BASE_BRANCH" ]]; then
+            echo "Source and target branches must be different." >&2
+            exit 2
           fi
-          git switch -c "$BRANCH" "origin/$BASE_BRANCH"
+          git fetch origin "$BASE_BRANCH"
+          if git fetch origin "$BRANCH"; then
+            git switch -C "$BRANCH" "origin/$BRANCH"
+          else
+            git switch -c "$BRANCH" "origin/$BASE_BRANCH"
+          fi
           echo "BRANCH=$BRANCH" >> "$GITHUB_ENV"
           echo "BASE_BRANCH=$BASE_BRANCH" >> "$GITHUB_ENV"
       - name: Generate application with Nx
@@ -77,8 +79,8 @@ jobs:
             const file = path.join(directory, name);
             const original = fs.readFileSync(file, 'utf8');
             const updated = original
-              .replace(/npx nx records+--s+/g, '')
-              .replace(/remotes/origin/[A-Za-z0-9._/-]+/g, 'HEAD~1');
+              .split('npx nx record -- ').join('')
+              .replace(new RegExp('remotes/origin/[A-Za-z0-9._/-]+', 'g'), 'HEAD~1');
             if (updated !== original) fs.writeFileSync(file, updated);
           }
           NODE

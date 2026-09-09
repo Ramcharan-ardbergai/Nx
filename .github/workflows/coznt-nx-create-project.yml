@@ -66,24 +66,6 @@ jobs:
           esac
           node -e "require.resolve('$PLUGIN/package.json')" >/dev/null 2>&1 || npx nx add "$PLUGIN" --no-interactive
           npx nx generate "$GENERATOR" "apps/$NAME" --e2eTestRunner=none --no-interactive
-      - name: Make CI independent of Nx Cloud
-        shell: bash
-        run: |
-          node <<'NODE'
-          const fs = require('node:fs');
-          const path = require('node:path');
-          const directory = '.github/workflows';
-          if (!fs.existsSync(directory)) process.exit(0);
-          for (const name of fs.readdirSync(directory)) {
-            if (!/.ya?ml$/i.test(name) || name === 'coznt-nx-create-project.yml') continue;
-            const file = path.join(directory, name);
-            const original = fs.readFileSync(file, 'utf8');
-            const updated = original
-              .split('npx nx record -- ').join('')
-              .replace(new RegExp('remotes/origin/[A-Za-z0-9._/-]+', 'g'), 'HEAD~1');
-            if (updated !== original) fs.writeFileSync(file, updated);
-          }
-          NODE
       - name: Commit and push
         env:
           NAME: "${{ inputs.project_name }}"

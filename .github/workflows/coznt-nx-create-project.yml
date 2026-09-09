@@ -66,6 +66,14 @@ jobs:
           esac
           node -e "require.resolve('$PLUGIN/package.json')" >/dev/null 2>&1 || npx nx add "$PLUGIN" --no-interactive
           npx nx generate "$GENERATOR" "apps/$NAME" --e2eTestRunner=none --no-interactive
+      - name: Synchronize dependency lockfile
+        shell: bash
+        run: |
+          if [[ -f pnpm-lock.yaml ]]; then pnpm install --no-frozen-lockfile
+          elif [[ -f yarn.lock ]]; then yarn install
+          elif [[ -f package-lock.json ]]; then npm install --package-lock-only --legacy-peer-deps
+          else echo 'A supported lockfile is required.' >&2; exit 2
+          fi
       - name: Commit and push
         env:
           NAME: "${{ inputs.project_name }}"

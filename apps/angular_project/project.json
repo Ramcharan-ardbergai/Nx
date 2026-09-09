@@ -1,0 +1,80 @@
+{
+  "name": "angular_project",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "app",
+  "sourceRoot": "apps/angular_project/src",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@angular/build:application",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/angular_project",
+        "browser": "apps/angular_project/src/main.ts",
+        "tsConfig": "apps/angular_project/tsconfig.app.json",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/angular_project/public"
+          }
+        ],
+        "styles": ["apps/angular_project/src/styles.css"]
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "4kb",
+              "maximumError": "8kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        }
+      }
+    },
+    "serve": {
+      "continuous": true,
+      "executor": "@angular/build:dev-server",
+      "defaultConfiguration": "development",
+      "configurations": {
+        "production": {
+          "buildTarget": "angular_project:build:production"
+        },
+        "development": {
+          "buildTarget": "angular_project:build:development"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@angular/build:unit-test",
+      "options": {
+        "watch": false
+      }
+    },
+    "serve-static": {
+      "continuous": true,
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "angular_project:build",
+        "staticFilePath": "dist/apps/angular_project/browser",
+        "spa": true
+      }
+    }
+  }
+}

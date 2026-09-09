@@ -10,6 +10,7 @@
     "@nx/eslint": "23.1.0",
     "@nx/eslint-plugin": "23.1.0",
     "@nx/js": "23.1.0",
+    "@nx/next": "^23.1.0",
     "@nx/playwright": "23.1.0",
     "@nx/react": "^23.1.0",
     "@nx/vite": "23.1.0",
@@ -51,9 +52,11 @@
     "calculator",
     "todo-app",
     "drug-management-system",
-    "drug-management"
+    "drug-management",
+    "apps/*"
   ],
   "dependencies": {
+    "next": "~16.1.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   }

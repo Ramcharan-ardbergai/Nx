@@ -51,3 +51,7 @@ Thumbs.db
 vitest.config.*.timestamp*
 vite.config.*.timestamp*
 test-output
+
+.angular
+
+__screenshots__/
